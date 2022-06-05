@@ -7,16 +7,20 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
-import javafx.scene.control.ButtonBar;
 import javafx.scene.control.ButtonType;
+import javafx.scene.control.Label;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
 import static game.GameSettings.*;
 
 
 public class GameOfLife extends Application {
+    public static long epoch = 0;
 
     public static void main(String[] args) {
         launch(args);
@@ -34,12 +38,16 @@ public class GameOfLife extends Application {
         Button stopB = new Button("Stop");
         Button stepB = new Button("Step");
         Button clearB = new Button("Clear");
-        HBox controlPanel1 = new HBox(20, randomFillB, runB, stopB,stepB, clearB);
+        HBox controlPanel1 = new HBox(20, randomFillB, runB, stopB, stepB, clearB);
         controlPanel1.setAlignment(Pos.BASELINE_CENTER);
 
         Button fasterB = new Button("Faster");
         Button slowerB = new Button("Slower");
-        HBox controlPanel2 = new HBox(20, fasterB, slowerB);
+        Label epochLabel = new Label("00000");
+        epochLabel.setBackground(
+                new Background(
+                        new BackgroundFill(Color.AQUA, null, null)));
+        HBox controlPanel2 = new HBox(20, fasterB, slowerB, epochLabel);
         controlPanel2.setAlignment(Pos.BASELINE_CENTER);
 
         mainRoot.getChildren().addAll(gameField, controlPanel1, controlPanel2);
@@ -50,7 +58,7 @@ public class GameOfLife extends Application {
         //primaryStage.setFullScreen(true);
 
         GraphicsContext gameFieldGraphics = gameField.getGraphicsContext2D();
-        GameEngine gameEngine = new GameEngine(gameFieldGraphics);
+        GameEngine gameEngine = new GameEngine(gameFieldGraphics, epochLabel);
         gameEngine.clearField();
 
         GameAnimationTimer runAnimation = new GameAnimationTimer(gameEngine);
@@ -61,9 +69,12 @@ public class GameOfLife extends Application {
         runB.setOnAction(keyEvent -> runAnimation.start());
         stepB.setOnAction(keyEvent -> gameEngine.nextStep());
         stopB.setOnAction(keyEvent -> runAnimation.stop());
-        clearB.setOnAction(keyEvent -> gameEngine.clearField());
-        fasterB.setOnAction(keyEvent -> GAME_REFRESH_DELAY-= 50);
-        slowerB.setOnAction(keyEvent -> GAME_REFRESH_DELAY+= 50);
+        clearB.setOnAction(keyEvent -> {
+            gameEngine.clearField();
+            runAnimation.stop();
+        });
+        fasterB.setOnAction(keyEvent -> GAME_REFRESH_DELAY -= 50);
+        slowerB.setOnAction(keyEvent -> GAME_REFRESH_DELAY += 50);
 
         Alert closeWindowAlert = new Alert(Alert.AlertType.CONFIRMATION);
         closeWindowAlert.setContentText("Really close?");

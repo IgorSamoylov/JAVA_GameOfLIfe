@@ -1,6 +1,7 @@
 package game;
 
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.control.Label;
 
 import java.util.Arrays;
 import java.util.Random;
@@ -9,11 +10,13 @@ import static game.GameSettings.*;
 
 public class GameEngine {
     private final GraphicsContext gameFieldGraphics;
+    private final Label epochLabel;
     private int[][] gridArray;
     private static final Random random = new Random();
 
-    public GameEngine(GraphicsContext gameFieldGraphics) {
+    public GameEngine(GraphicsContext gameFieldGraphics, Label epochLabel) {
         this.gameFieldGraphics = gameFieldGraphics;
+        this.epochLabel = epochLabel;
         gridArray = new int[COLS][ROWS];
         gameFieldGraphics.setFill(BACKGROUND_COLOR);
         gameFieldGraphics.fillRect(0, 0, W_WIDTH, W_HEIGHT);
@@ -31,13 +34,14 @@ public class GameEngine {
     public void drawCell(Double x, Double y) {
         int i = (int) (x / CELL_SIZE);
         int j = (int) (y / CELL_SIZE);
-        gridArray[i][j] = 1;
+        gridArray[i][j] = gridArray[i][j] == 0 ? 1 : 0;
 
         draw();
     }
 
     public void clearField() {
         Arrays.stream(gridArray).forEach(arr -> Arrays.fill(arr,0));
+        GameOfLife.epoch = 0;
         draw();
     }
 
@@ -55,6 +59,8 @@ public class GameEngine {
                 }
             }
         }
+        String epochNumber = String.format("%05d", GameOfLife.epoch++);
+        epochLabel.setText(epochNumber);
     }
 
     public void nextStep() {
@@ -93,9 +99,4 @@ public class GameEngine {
 
         return sum;
     }
-
-    //private int countAliveNeighborsAdv(int i, int j) {
-
-        //for(int k = )
-   // }
 }
