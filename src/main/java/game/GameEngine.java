@@ -12,14 +12,14 @@ public class GameEngine {
     private final GraphicsContext gameFieldGraphics;
     private final Label aliveLabel;
     private final Label epochLabel;
-    private int[][] gridArray;
+    private boolean[][] gridArray;
     private static final Random random = new Random();
 
     public GameEngine(GraphicsContext gameFieldGraphics, Label aliveLabel, Label epochLabel) {
         this.gameFieldGraphics = gameFieldGraphics;
         this.aliveLabel = aliveLabel;
         this.epochLabel = epochLabel;
-        gridArray = new int[COLS][ROWS];
+        gridArray = new boolean[COLS][ROWS];
         gameFieldGraphics.setFill(BACKGROUND_COLOR);
         gameFieldGraphics.fillRect(0, 0, W_WIDTH, W_HEIGHT);
     }
@@ -27,7 +27,7 @@ public class GameEngine {
     public void randomFill() {
         for (int i = 0; i < COLS; i++) {
             for (int j = 0; j < ROWS; j++) {
-                gridArray[i][j] = random.nextInt(2);
+                gridArray[i][j] = random.nextBoolean();
             }
         }
         draw();
@@ -36,12 +36,12 @@ public class GameEngine {
     public void drawCell(Double x, Double y) {
         int i = (int) (x / CELL_SIZE);
         int j = (int) (y / CELL_SIZE);
-        gridArray[i][j] = gridArray[i][j] == 0 ? 1 : 0;
+        gridArray[i][j] = !gridArray[i][j];
         draw();
     }
 
     public void clearField() {
-        Arrays.stream(gridArray).forEach(arr -> Arrays.fill(arr,0));
+        Arrays.stream(gridArray).forEach(arr -> Arrays.fill(arr,false));
         GameOfLife.epoch = 0;
         draw();
     }
@@ -50,7 +50,7 @@ public class GameEngine {
         int alive = 0;
         for (int i = 0; i < COLS; i++) {
             for (int j = 0; j < ROWS; j++) {
-                if (gridArray[i][j] == 1) {
+                if (gridArray[i][j]) {
                     gameFieldGraphics.setFill(CELL_LIVE_COLOR);
                     gameFieldGraphics.fillRect((i * CELL_SIZE) + 1, (j * CELL_SIZE) + 1,
                             CELL_SIZE - 2, CELL_SIZE - 2);
@@ -71,16 +71,16 @@ public class GameEngine {
     }
 
     public void nextStep() {
-        int[][] nextArray = new int[COLS][ROWS];
+        boolean[][] nextArray = new boolean[COLS][ROWS];
 
         for (int i = 0; i < COLS; i++) {
             for (int j = 0; j < ROWS; j++) {
                 int neighbors = countAliveNeighbors(i, j);
 
                 if (neighbors == 3) {
-                    nextArray[i][j] = 1;
+                    nextArray[i][j] = true;
                 } else if (neighbors < 2 || neighbors > 3) {
-                    nextArray[i][j] = 0;
+                    nextArray[i][j] = false;
                 } else {
                     nextArray[i][j] = gridArray[i][j];
                 }
@@ -100,10 +100,10 @@ public class GameEngine {
 
         for (int k = iStart; k <= iEndInclusive; k++) {
             for (int l = jStart; l <= jEndInclusive; l++) {
-                sum += gridArray[i + k][l + j];
+                sum += gridArray[i + k][l + j] ? 1 : 0;
             }
         }
-        sum -= gridArray[i][j];
+        sum -= gridArray[i][j] ? 1 : 0;
 
         return sum;
     }

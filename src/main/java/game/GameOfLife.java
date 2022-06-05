@@ -50,7 +50,7 @@ public class GameOfLife extends Application {
         Label aliveLabel = new Label("000000");
         Label epochLabel = new Label("000000");
         Background labelBackground = new Background(
-                new BackgroundFill(Color.AQUA, null, null));
+                new BackgroundFill(LABEL_BACKGROUND, null, null));
         aliveLabel.setBackground(labelBackground);
         epochLabel.setBackground(labelBackground);
 
