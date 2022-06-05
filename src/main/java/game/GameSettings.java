@@ -12,5 +12,5 @@ class GameSettings {
     public static Color CELL_LIVE_COLOR = Color.DARKBLUE;
     public static Color CELL_DEAD_COLOR = Color.BURLYWOOD;
     public static Color LABEL_BACKGROUND = Color.AQUA;
-    public static int GAME_REFRESH_DELAY = 300;
+    public static long GAME_REFRESH_DELAY = 300_000_000;
 }

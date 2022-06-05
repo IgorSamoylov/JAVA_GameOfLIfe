@@ -13,15 +13,12 @@ import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
 import static game.GameSettings.*;
 
 
 public class GameOfLife extends Application {
-    public static long epoch = 0;
-    public static long alive = 0;
 
     public static void main(String[] args) {
         launch(args);
@@ -73,7 +70,10 @@ public class GameOfLife extends Application {
 
         // Buttons bindings setup
         gameField.setOnMouseClicked(mouseEvent ->
-                gameEngine.drawCell(mouseEvent.getSceneX(), mouseEvent.getSceneY()));
+                gameEngine.drawCell(
+                        (int)(mouseEvent.getSceneX() / CELL_SIZE),
+                        (int)(mouseEvent.getSceneY() / CELL_SIZE)
+                ));
         randomFillB.setOnAction(keyEvent -> gameEngine.randomFill());
         runB.setOnAction(keyEvent -> runAnimation.start());
         stepB.setOnAction(keyEvent -> gameEngine.nextStep());
@@ -82,8 +82,8 @@ public class GameOfLife extends Application {
             gameEngine.clearField();
             runAnimation.stop();
         });
-        fasterB.setOnAction(keyEvent -> GAME_REFRESH_DELAY -= 50);
-        slowerB.setOnAction(keyEvent -> GAME_REFRESH_DELAY += 50);
+        fasterB.setOnAction(keyEvent -> GAME_REFRESH_DELAY -= 50_000_000);
+        slowerB.setOnAction(keyEvent -> GAME_REFRESH_DELAY += 50_000_000);
 
         // Alert on close window setup
         Alert closeWindowAlert = new Alert(Alert.AlertType.CONFIRMATION);

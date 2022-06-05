@@ -9,17 +9,19 @@ import java.util.Random;
 import static game.GameSettings.*;
 
 public class GameEngine {
+    private static final Random random = new Random();
     private final GraphicsContext gameFieldGraphics;
     private final Label aliveLabel;
     private final Label epochLabel;
     private boolean[][] gridArray;
-    private static final Random random = new Random();
+    private boolean[][] nextGridArray;
 
     public GameEngine(GraphicsContext gameFieldGraphics, Label aliveLabel, Label epochLabel) {
         this.gameFieldGraphics = gameFieldGraphics;
         this.aliveLabel = aliveLabel;
         this.epochLabel = epochLabel;
         gridArray = new boolean[COLS][ROWS];
+        nextGridArray = new boolean[COLS][ROWS];
         gameFieldGraphics.setFill(BACKGROUND_COLOR);
         gameFieldGraphics.fillRect(0, 0, W_WIDTH, W_HEIGHT);
     }
@@ -33,16 +35,14 @@ public class GameEngine {
         draw();
     }
 
-    public void drawCell(Double x, Double y) {
-        int i = (int) (x / CELL_SIZE);
-        int j = (int) (y / CELL_SIZE);
+    public void drawCell(int i, int j) {
         gridArray[i][j] = !gridArray[i][j];
         draw();
     }
 
     public void clearField() {
-        Arrays.stream(gridArray).forEach(arr -> Arrays.fill(arr,false));
-        GameOfLife.epoch = 0;
+        Arrays.stream(gridArray).forEach(arr -> Arrays.fill(arr, false));
+        GameStats.epoch = 0;
         draw();
     }
 
@@ -62,32 +62,34 @@ public class GameEngine {
                 }
             }
         }
-        GameOfLife.alive = alive;
+        GameStats.alive = alive;
         String aliveNumber = String.format("%06d", alive);
         aliveLabel.setText(aliveNumber);
 
-        String epochNumber = String.format("%06d", GameOfLife.epoch);
+        String epochNumber = String.format("%06d", GameStats.epoch);
         epochLabel.setText(epochNumber);
     }
 
     public void nextStep() {
-        boolean[][] nextArray = new boolean[COLS][ROWS];
-
         for (int i = 0; i < COLS; i++) {
             for (int j = 0; j < ROWS; j++) {
                 int neighbors = countAliveNeighbors(i, j);
 
                 if (neighbors == 3) {
-                    nextArray[i][j] = true;
+                    nextGridArray[i][j] = true;
                 } else if (neighbors < 2 || neighbors > 3) {
-                    nextArray[i][j] = false;
+                    nextGridArray[i][j] = false;
                 } else {
-                    nextArray[i][j] = gridArray[i][j];
+                    nextGridArray[i][j] = gridArray[i][j];
                 }
             }
         }
-        gridArray = nextArray;
-        GameOfLife.epoch++;
+        // Swap these arrays to prevent memory clogging
+        boolean[][] referenceArrayHolder = gridArray;
+        gridArray = nextGridArray;
+        nextGridArray = referenceArrayHolder;
+
+        GameStats.epoch++;
         draw();
     }
 
