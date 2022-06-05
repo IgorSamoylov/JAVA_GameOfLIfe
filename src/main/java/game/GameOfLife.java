@@ -21,6 +21,7 @@ import static game.GameSettings.*;
 
 public class GameOfLife extends Application {
     public static long epoch = 0;
+    public static long alive = 0;
 
     public static void main(String[] args) {
         launch(args);
@@ -33,36 +34,44 @@ public class GameOfLife extends Application {
 
         final Canvas gameField = new Canvas(W_WIDTH, W_HEIGHT);
 
+        // Upper control panel setup
         Button randomFillB = new Button("Random Fill");
         Button runB = new Button("Run");
         Button stopB = new Button("Stop");
         Button stepB = new Button("Step");
         Button clearB = new Button("Clear");
+
         HBox controlPanel1 = new HBox(20, randomFillB, runB, stopB, stepB, clearB);
         controlPanel1.setAlignment(Pos.BASELINE_CENTER);
 
+        // Lower control panel setup
         Button fasterB = new Button("Faster");
         Button slowerB = new Button("Slower");
-        Label epochLabel = new Label("00000");
-        epochLabel.setBackground(
-                new Background(
-                        new BackgroundFill(Color.AQUA, null, null)));
-        HBox controlPanel2 = new HBox(20, fasterB, slowerB, epochLabel);
+        Label aliveLabel = new Label("000000");
+        Label epochLabel = new Label("000000");
+        Background labelBackground = new Background(
+                new BackgroundFill(Color.AQUA, null, null));
+        aliveLabel.setBackground(labelBackground);
+        epochLabel.setBackground(labelBackground);
+
+        HBox controlPanel2 = new HBox(20, aliveLabel, fasterB, slowerB, epochLabel);
         controlPanel2.setAlignment(Pos.BASELINE_CENTER);
 
         mainRoot.getChildren().addAll(gameField, controlPanel1, controlPanel2);
 
+        // Main window setup
         primaryStage.setTitle("CONWAY'S GAME OF LIFE");
         primaryStage.setResizable(false);
         primaryStage.setScene(mainScene);
         //primaryStage.setFullScreen(true);
 
+        // Game engine init
         GraphicsContext gameFieldGraphics = gameField.getGraphicsContext2D();
-        GameEngine gameEngine = new GameEngine(gameFieldGraphics, epochLabel);
+        GameEngine gameEngine = new GameEngine(gameFieldGraphics, aliveLabel, epochLabel);
         gameEngine.clearField();
-
         GameAnimationTimer runAnimation = new GameAnimationTimer(gameEngine);
 
+        // Buttons bindings setup
         gameField.setOnMouseClicked(mouseEvent ->
                 gameEngine.drawCell(mouseEvent.getSceneX(), mouseEvent.getSceneY()));
         randomFillB.setOnAction(keyEvent -> gameEngine.randomFill());
@@ -76,6 +85,7 @@ public class GameOfLife extends Application {
         fasterB.setOnAction(keyEvent -> GAME_REFRESH_DELAY -= 50);
         slowerB.setOnAction(keyEvent -> GAME_REFRESH_DELAY += 50);
 
+        // Alert on close window setup
         Alert closeWindowAlert = new Alert(Alert.AlertType.CONFIRMATION);
         closeWindowAlert.setContentText("Really close?");
         primaryStage.setOnCloseRequest(event ->
@@ -83,6 +93,7 @@ public class GameOfLife extends Application {
                     if (btnType == ButtonType.CANCEL) event.consume();
                 }));
 
+        // Create main window
         primaryStage.show();
     }
 }

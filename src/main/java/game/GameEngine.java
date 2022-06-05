@@ -10,12 +10,14 @@ import static game.GameSettings.*;
 
 public class GameEngine {
     private final GraphicsContext gameFieldGraphics;
+    private final Label aliveLabel;
     private final Label epochLabel;
     private int[][] gridArray;
     private static final Random random = new Random();
 
-    public GameEngine(GraphicsContext gameFieldGraphics, Label epochLabel) {
+    public GameEngine(GraphicsContext gameFieldGraphics, Label aliveLabel, Label epochLabel) {
         this.gameFieldGraphics = gameFieldGraphics;
+        this.aliveLabel = aliveLabel;
         this.epochLabel = epochLabel;
         gridArray = new int[COLS][ROWS];
         gameFieldGraphics.setFill(BACKGROUND_COLOR);
@@ -35,7 +37,6 @@ public class GameEngine {
         int i = (int) (x / CELL_SIZE);
         int j = (int) (y / CELL_SIZE);
         gridArray[i][j] = gridArray[i][j] == 0 ? 1 : 0;
-
         draw();
     }
 
@@ -46,12 +47,14 @@ public class GameEngine {
     }
 
     private void draw() {
+        int alive = 0;
         for (int i = 0; i < COLS; i++) {
             for (int j = 0; j < ROWS; j++) {
                 if (gridArray[i][j] == 1) {
                     gameFieldGraphics.setFill(CELL_LIVE_COLOR);
                     gameFieldGraphics.fillRect((i * CELL_SIZE) + 1, (j * CELL_SIZE) + 1,
                             CELL_SIZE - 2, CELL_SIZE - 2);
+                    alive++;
                 } else {
                     gameFieldGraphics.setFill(CELL_DEAD_COLOR);
                     gameFieldGraphics.fillRect((i * CELL_SIZE) + 1, (j * CELL_SIZE) + 1,
@@ -59,7 +62,11 @@ public class GameEngine {
                 }
             }
         }
-        String epochNumber = String.format("%05d", GameOfLife.epoch++);
+        GameOfLife.alive = alive;
+        String aliveNumber = String.format("%06d", alive);
+        aliveLabel.setText(aliveNumber);
+
+        String epochNumber = String.format("%06d", GameOfLife.epoch);
         epochLabel.setText(epochNumber);
     }
 
@@ -80,6 +87,7 @@ public class GameEngine {
             }
         }
         gridArray = nextArray;
+        GameOfLife.epoch++;
         draw();
     }
 
