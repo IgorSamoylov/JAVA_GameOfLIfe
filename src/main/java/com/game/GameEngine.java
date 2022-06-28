@@ -20,7 +20,7 @@ public class GameEngine extends Thread {
         this.epochLabel = epochLabel;
         gridArray = new boolean[GameSettings.COLS][GameSettings.ROWS];
         nextGridArray = new boolean[GameSettings.COLS][GameSettings.ROWS];
-        gameFieldGraphics.setFill(GameSettings.BACKGROUND_COLOR);
+        gameFieldGraphics.setFill(GameSettings.GAMEFIELD_BACKGROUND_COLOR);
         gameFieldGraphics.fillRect(0, 0, GameSettings.W_WIDTH, GameSettings.W_HEIGHT);
     }
 

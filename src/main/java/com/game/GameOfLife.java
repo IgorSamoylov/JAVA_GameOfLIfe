@@ -64,10 +64,13 @@ public class GameOfLife extends Application {
 
         // Main window setup
         VBox mainRoot = new VBox(20);
-        Scene mainScene = new Scene(mainRoot, GameSettings.W_WIDTH, GameSettings.W_HEIGHT + 120);
+        Background mainRootBackground = new Background(
+                new BackgroundFill(GameSettings.MAINWINDOW_BACKGROUND_COLOR, null, null));
+        mainRoot.setBackground(mainRootBackground);
 
+        Scene mainScene = new Scene(mainRoot, GameSettings.W_WIDTH, GameSettings.W_HEIGHT + 120);
         mainRoot.getChildren().addAll(gameField, controlPanel1, controlPanel2);
-        primaryStage.setTitle("CONWAY'S GAME OF LIFE");
+        primaryStage.setTitle("GAME OF LIFE");
         primaryStage.setResizable(false);
         primaryStage.setScene(mainScene);
         //primaryStage.setFullScreen(true);
@@ -79,8 +82,8 @@ public class GameOfLife extends Application {
         gameEngine.start();
         gameEngine.clearField();
         // Creating thread #2 for Animation Timer
-        final GameAnimationTimer[] runAnimation = new GameAnimationTimer[1];
-        new Thread(() -> runAnimation[0] = new GameAnimationTimer(gameEngine)).start();
+        GameAnimationTimer animationTimer = new GameAnimationTimer(gameEngine);
+        animationTimer.start();
 
         // Buttons bindings setup
         gameField.setOnMouseClicked(mouseEvent ->
@@ -89,17 +92,17 @@ public class GameOfLife extends Application {
                         (int)(mouseEvent.getSceneY() / GameSettings.CELL_SIZE)
                 ));
         randomFillB.setOnAction(keyEvent -> gameEngine.randomFill());
-        runB.setOnAction(keyEvent -> runAnimation[0].start());
+        runB.setOnAction(keyEvent -> animationTimer.animationEngine.start());
         stepB.setOnAction(keyEvent -> gameEngine.nextStep());
-        stopB.setOnAction(keyEvent -> runAnimation[0].stop());
+        stopB.setOnAction(keyEvent -> animationTimer.animationEngine.stop());
         clearB.setOnAction(keyEvent -> {
             gameEngine.clearField();
-            runAnimation[0].stop();
+            animationTimer.animationEngine.stop();
         });
         fasterB.setOnAction(keyEvent -> GameSettings.GAME_REFRESH_DELAY -= 50);
         slowerB.setOnAction(keyEvent -> GameSettings.GAME_REFRESH_DELAY += 50);
         settingsB.setOnAction(event -> {
-            runAnimation[0].stop();
+            animationTimer.animationEngine.stop();
             Stage settingsStage = new Stage();
             new SettingsWindow().start(settingsStage);
         });

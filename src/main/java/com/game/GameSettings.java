@@ -8,9 +8,10 @@ class GameSettings {
     public static int ROWS = 30;
     public static int W_WIDTH = CELL_SIZE * COLS;
     public static int W_HEIGHT = CELL_SIZE * ROWS;
-    public static Color BACKGROUND_COLOR = Color.AQUA;
+    public static Color GAMEFIELD_BACKGROUND_COLOR = Color.BISQUE;
+    public static Color MAINWINDOW_BACKGROUND_COLOR = Color.CORNSILK;
     public static Color CELL_LIVE_COLOR = Color.DARKGREEN;
     public static Color CELL_DEAD_COLOR = Color.BURLYWOOD;
-    public static Color LABEL_BACKGROUND = Color.AQUA;
-    public static int GAME_REFRESH_DELAY = 300;
+    public static Color LABEL_BACKGROUND = Color.AQUAMARINE;
+    public static int GAME_REFRESH_DELAY = 400;
 }

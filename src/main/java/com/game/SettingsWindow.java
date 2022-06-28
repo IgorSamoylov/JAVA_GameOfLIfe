@@ -23,7 +23,7 @@ public class SettingsWindow extends Application {
         delayButtonSet.setOnAction(event -> {
             try {
                 GameSettings.GAME_REFRESH_DELAY = delayBox.getValue() * 10;
-            } catch (Exception ex) { }
+            } catch (Exception ignored) { }
         });
 
         GridPane mainRoot = new GridPane();
