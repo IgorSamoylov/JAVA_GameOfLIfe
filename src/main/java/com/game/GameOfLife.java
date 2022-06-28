@@ -90,8 +90,8 @@ public class GameOfLife extends Application {
             gameEngine.clearField();
             runAnimation.stop();
         });
-        fasterB.setOnAction(keyEvent -> GameSettings.GAME_REFRESH_DELAY -= 50_000_000);
-        slowerB.setOnAction(keyEvent -> GameSettings.GAME_REFRESH_DELAY += 50_000_000);
+        fasterB.setOnAction(keyEvent -> GameSettings.GAME_REFRESH_DELAY -= 50);
+        slowerB.setOnAction(keyEvent -> GameSettings.GAME_REFRESH_DELAY += 50);
         settingsB.setOnAction(event -> {
             runAnimation.stop();
             Stage settingsStage = new Stage();
