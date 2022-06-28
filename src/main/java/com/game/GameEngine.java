@@ -1,12 +1,10 @@
-package game;
+package com.game;
 
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Label;
 
 import java.util.Arrays;
 import java.util.Random;
-
-import static game.GameSettings.*;
 
 public class GameEngine {
     private static final Random random = new Random();
@@ -20,15 +18,15 @@ public class GameEngine {
         this.gameFieldGraphics = gameFieldGraphics;
         this.aliveLabel = aliveLabel;
         this.epochLabel = epochLabel;
-        gridArray = new boolean[COLS][ROWS];
-        nextGridArray = new boolean[COLS][ROWS];
-        gameFieldGraphics.setFill(BACKGROUND_COLOR);
-        gameFieldGraphics.fillRect(0, 0, W_WIDTH, W_HEIGHT);
+        gridArray = new boolean[GameSettings.COLS][GameSettings.ROWS];
+        nextGridArray = new boolean[GameSettings.COLS][GameSettings.ROWS];
+        gameFieldGraphics.setFill(GameSettings.BACKGROUND_COLOR);
+        gameFieldGraphics.fillRect(0, 0, GameSettings.W_WIDTH, GameSettings.W_HEIGHT);
     }
 
     public void randomFill() {
-        for (int i = 0; i < COLS; i++) {
-            for (int j = 0; j < ROWS; j++) {
+        for (int i = 0; i < GameSettings.COLS; i++) {
+            for (int j = 0; j < GameSettings.ROWS; j++) {
                 gridArray[i][j] = random.nextBoolean();
             }
         }
@@ -48,17 +46,17 @@ public class GameEngine {
 
     private void draw() {
         int alive = 0;
-        for (int i = 0; i < COLS; i++) {
-            for (int j = 0; j < ROWS; j++) {
+        for (int i = 0; i < GameSettings.COLS; i++) {
+            for (int j = 0; j < GameSettings.ROWS; j++) {
                 if (gridArray[i][j]) {
-                    gameFieldGraphics.setFill(CELL_LIVE_COLOR);
-                    gameFieldGraphics.fillRect((i * CELL_SIZE) + 1, (j * CELL_SIZE) + 1,
-                            CELL_SIZE - 2, CELL_SIZE - 2);
+                    gameFieldGraphics.setFill(GameSettings.CELL_LIVE_COLOR);
+                    gameFieldGraphics.fillRect((i * GameSettings.CELL_SIZE) + 1, (j * GameSettings.CELL_SIZE) + 1,
+                            GameSettings.CELL_SIZE - 2, GameSettings.CELL_SIZE - 2);
                     alive++;
                 } else {
-                    gameFieldGraphics.setFill(CELL_DEAD_COLOR);
-                    gameFieldGraphics.fillRect((i * CELL_SIZE) + 1, (j * CELL_SIZE) + 1,
-                            CELL_SIZE - 2, CELL_SIZE - 2);
+                    gameFieldGraphics.setFill(GameSettings.CELL_DEAD_COLOR);
+                    gameFieldGraphics.fillRect((i * GameSettings.CELL_SIZE) + 1, (j * GameSettings.CELL_SIZE) + 1,
+                            GameSettings.CELL_SIZE - 2, GameSettings.CELL_SIZE - 2);
                 }
             }
         }
@@ -71,8 +69,8 @@ public class GameEngine {
     }
 
     public void nextStep() {
-        for (int i = 0; i < COLS; i++) {
-            for (int j = 0; j < ROWS; j++) {
+        for (int i = 0; i < GameSettings.COLS; i++) {
+            for (int j = 0; j < GameSettings.ROWS; j++) {
                 int neighbors = countAliveNeighbors(i, j);
 
                 if (neighbors == 3) {

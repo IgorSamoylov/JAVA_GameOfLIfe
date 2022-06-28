@@ -1,8 +1,8 @@
-package game;
+package com.game;
 
 import javafx.animation.AnimationTimer;
 
-import static game.GameSettings.GAME_REFRESH_DELAY;
+import java.util.concurrent.TimeUnit;
 
 public class GameAnimationTimer extends AnimationTimer {
 
@@ -13,11 +13,12 @@ public class GameAnimationTimer extends AnimationTimer {
         this.gameEngine = gameEngine;
     }
 
-    // Java FX calls it every frame and sends current system time in nanos
+    // Java FX simple calls it every frame and sends current system time in nanos
     @Override
     public void handle(long nowTime) {
         if (GameStats.alive == 0) this.stop();
-        if (nowTime  >= prevCallTime + GAME_REFRESH_DELAY) {
+        if (nowTime  >= prevCallTime
+                + TimeUnit.MILLISECONDS.toNanos(GameSettings.GAME_REFRESH_DELAY)) {
             gameEngine.nextStep();
             prevCallTime = nowTime;
         }

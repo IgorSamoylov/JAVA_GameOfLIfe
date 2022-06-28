@@ -1,4 +1,4 @@
-package game;
+package com.game;
 
 import javafx.application.Application;
 import javafx.geometry.Pos;
@@ -9,13 +9,13 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-
-import static game.GameSettings.*;
 
 
 public class GameOfLife extends Application {
@@ -27,9 +27,9 @@ public class GameOfLife extends Application {
     @Override
     public void start(Stage primaryStage) {
         VBox mainRoot = new VBox(20);
-        Scene mainScene = new Scene(mainRoot, W_WIDTH, W_HEIGHT + 120);
+        Scene mainScene = new Scene(mainRoot, GameSettings.W_WIDTH, GameSettings.W_HEIGHT + 120);
 
-        final Canvas gameField = new Canvas(W_WIDTH, W_HEIGHT);
+        final Canvas gameField = new Canvas(GameSettings.W_WIDTH, GameSettings.W_HEIGHT);
 
         // Upper control panel setup
         Button randomFillB = new Button("Random Fill");
@@ -46,12 +46,20 @@ public class GameOfLife extends Application {
         Button slowerB = new Button("Slower");
         Label aliveLabel = new Label("000000");
         Label epochLabel = new Label("000000");
+
+        Button settingsB = new Button();
+        Image settingsImage = new Image("settings-button.png");
+        ImageView settingsImageView = new ImageView(settingsImage);
+        settingsImageView.setFitHeight(25);
+        settingsImageView.setPreserveRatio(true);
+        settingsB.setGraphic(settingsImageView);
+
         Background labelBackground = new Background(
-                new BackgroundFill(LABEL_BACKGROUND, null, null));
+                new BackgroundFill(GameSettings.LABEL_BACKGROUND, null, null));
         aliveLabel.setBackground(labelBackground);
         epochLabel.setBackground(labelBackground);
 
-        HBox controlPanel2 = new HBox(20, aliveLabel, fasterB, slowerB, epochLabel);
+        HBox controlPanel2 = new HBox(20, aliveLabel, fasterB, slowerB, epochLabel, settingsB);
         controlPanel2.setAlignment(Pos.BASELINE_CENTER);
 
         mainRoot.getChildren().addAll(gameField, controlPanel1, controlPanel2);
@@ -71,8 +79,8 @@ public class GameOfLife extends Application {
         // Buttons bindings setup
         gameField.setOnMouseClicked(mouseEvent ->
                 gameEngine.drawCell(
-                        (int)(mouseEvent.getSceneX() / CELL_SIZE),
-                        (int)(mouseEvent.getSceneY() / CELL_SIZE)
+                        (int)(mouseEvent.getSceneX() / GameSettings.CELL_SIZE),
+                        (int)(mouseEvent.getSceneY() / GameSettings.CELL_SIZE)
                 ));
         randomFillB.setOnAction(keyEvent -> gameEngine.randomFill());
         runB.setOnAction(keyEvent -> runAnimation.start());
@@ -82,8 +90,13 @@ public class GameOfLife extends Application {
             gameEngine.clearField();
             runAnimation.stop();
         });
-        fasterB.setOnAction(keyEvent -> GAME_REFRESH_DELAY -= 50_000_000);
-        slowerB.setOnAction(keyEvent -> GAME_REFRESH_DELAY += 50_000_000);
+        fasterB.setOnAction(keyEvent -> GameSettings.GAME_REFRESH_DELAY -= 50_000_000);
+        slowerB.setOnAction(keyEvent -> GameSettings.GAME_REFRESH_DELAY += 50_000_000);
+        settingsB.setOnAction(event -> {
+            runAnimation.stop();
+            Stage settingsStage = new Stage();
+            new SettingsWindow().start(settingsStage);
+        });
 
         // Alert on close window setup
         Alert closeWindowAlert = new Alert(Alert.AlertType.CONFIRMATION);
