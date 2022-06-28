@@ -72,10 +72,13 @@ public class GameOfLife extends Application {
 
         // Game engine init
         GraphicsContext gameFieldGraphics = gameField.getGraphicsContext2D();
+        // Creating thread #1 for Game Engine
         GameEngine gameEngine = new GameEngine(gameFieldGraphics, aliveLabel, epochLabel);
         gameEngine.start();
         gameEngine.clearField();
-        GameAnimationTimer runAnimation = new GameAnimationTimer(gameEngine);
+        // Creating thread #2 for Animation Timer
+        final GameAnimationTimer[] runAnimation = new GameAnimationTimer[1];
+        new Thread(() -> runAnimation[0] = new GameAnimationTimer(gameEngine)).start();
 
         // Buttons bindings setup
         gameField.setOnMouseClicked(mouseEvent ->
@@ -84,17 +87,17 @@ public class GameOfLife extends Application {
                         (int)(mouseEvent.getSceneY() / GameSettings.CELL_SIZE)
                 ));
         randomFillB.setOnAction(keyEvent -> gameEngine.randomFill());
-        runB.setOnAction(keyEvent -> runAnimation.start());
+        runB.setOnAction(keyEvent -> runAnimation[0].start());
         stepB.setOnAction(keyEvent -> gameEngine.nextStep());
-        stopB.setOnAction(keyEvent -> runAnimation.stop());
+        stopB.setOnAction(keyEvent -> runAnimation[0].stop());
         clearB.setOnAction(keyEvent -> {
             gameEngine.clearField();
-            runAnimation.stop();
+            runAnimation[0].stop();
         });
         fasterB.setOnAction(keyEvent -> GameSettings.GAME_REFRESH_DELAY -= 50);
         slowerB.setOnAction(keyEvent -> GameSettings.GAME_REFRESH_DELAY += 50);
         settingsB.setOnAction(event -> {
-            runAnimation.stop();
+            runAnimation[0].stop();
             Stage settingsStage = new Stage();
             new SettingsWindow().start(settingsStage);
         });
