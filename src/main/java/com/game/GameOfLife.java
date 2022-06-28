@@ -26,10 +26,6 @@ public class GameOfLife extends Application {
 
     @Override
     public void start(Stage primaryStage) {
-        VBox mainRoot = new VBox(20);
-        Scene mainScene = new Scene(mainRoot, GameSettings.W_WIDTH, GameSettings.W_HEIGHT + 120);
-
-        final Canvas gameField = new Canvas(GameSettings.W_WIDTH, GameSettings.W_HEIGHT);
 
         // Upper control panel setup
         Button randomFillB = new Button("Random Fill");
@@ -62,9 +58,15 @@ public class GameOfLife extends Application {
         HBox controlPanel2 = new HBox(20, aliveLabel, fasterB, slowerB, epochLabel, settingsB);
         controlPanel2.setAlignment(Pos.BASELINE_CENTER);
 
-        mainRoot.getChildren().addAll(gameField, controlPanel1, controlPanel2);
+
+        // Game Field setup
+        final Canvas gameField = new Canvas(GameSettings.W_WIDTH, GameSettings.W_HEIGHT);
 
         // Main window setup
+        VBox mainRoot = new VBox(20);
+        Scene mainScene = new Scene(mainRoot, GameSettings.W_WIDTH, GameSettings.W_HEIGHT + 120);
+
+        mainRoot.getChildren().addAll(gameField, controlPanel1, controlPanel2);
         primaryStage.setTitle("CONWAY'S GAME OF LIFE");
         primaryStage.setResizable(false);
         primaryStage.setScene(mainScene);
