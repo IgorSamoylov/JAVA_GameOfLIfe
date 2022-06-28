@@ -73,6 +73,7 @@ public class GameOfLife extends Application {
         // Game engine init
         GraphicsContext gameFieldGraphics = gameField.getGraphicsContext2D();
         GameEngine gameEngine = new GameEngine(gameFieldGraphics, aliveLabel, epochLabel);
+        gameEngine.start();
         gameEngine.clearField();
         GameAnimationTimer runAnimation = new GameAnimationTimer(gameEngine);
 

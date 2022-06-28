@@ -6,8 +6,8 @@ import java.util.concurrent.TimeUnit;
 
 public class GameAnimationTimer extends AnimationTimer {
 
-    private long prevCallTime = 0;
     private final GameEngine gameEngine;
+    private long prevCallTime = 0;
 
     public GameAnimationTimer(GameEngine gameEngine) {
         this.gameEngine = gameEngine;
@@ -17,7 +17,7 @@ public class GameAnimationTimer extends AnimationTimer {
     @Override
     public void handle(long nowTime) {
         if (GameStats.alive == 0) this.stop();
-        if (nowTime  >= prevCallTime
+        if (nowTime >= prevCallTime
                 + TimeUnit.MILLISECONDS.toNanos(GameSettings.GAME_REFRESH_DELAY)) {
             gameEngine.nextStep();
             prevCallTime = nowTime;

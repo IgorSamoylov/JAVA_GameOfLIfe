@@ -6,7 +6,7 @@ import javafx.scene.control.Label;
 import java.util.Arrays;
 import java.util.Random;
 
-public class GameEngine {
+public class GameEngine extends Thread {
     private static final Random random = new Random();
     private final GraphicsContext gameFieldGraphics;
     private final Label aliveLabel;
