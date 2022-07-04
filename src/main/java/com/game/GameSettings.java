@@ -14,4 +14,6 @@ class GameSettings {
     public static Color CELL_DEAD_COLOR = Color.BURLYWOOD;
     public static Color LABEL_BACKGROUND = Color.AQUAMARINE;
     public static int GAME_REFRESH_DELAY = 400;
+    public static boolean CHECK_REPEATS = true;
+    public static int MAX_REPEAT = 9;
 }

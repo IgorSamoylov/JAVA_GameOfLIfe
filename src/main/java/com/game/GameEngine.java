@@ -13,6 +13,8 @@ public class GameEngine extends Thread {
     private final Label epochLabel;
     private boolean[][] gridArray;
     private boolean[][] nextGridArray;
+    // Store old grid array for a repeatable game state checking
+    private boolean[][] prevGridArray;
 
     public GameEngine(GraphicsContext gameFieldGraphics, Label aliveLabel, Label epochLabel) {
         this.gameFieldGraphics = gameFieldGraphics;
@@ -20,6 +22,7 @@ public class GameEngine extends Thread {
         this.epochLabel = epochLabel;
         gridArray = new boolean[GameSettings.COLS][GameSettings.ROWS];
         nextGridArray = new boolean[GameSettings.COLS][GameSettings.ROWS];
+        prevGridArray = new boolean[GameSettings.COLS][GameSettings.ROWS];
         gameFieldGraphics.setFill(GameSettings.GAMEFIELD_BACKGROUND_COLOR);
         gameFieldGraphics.fillRect(0, 0, GameSettings.W_WIDTH, GameSettings.W_HEIGHT);
     }
@@ -82,8 +85,13 @@ public class GameEngine extends Thread {
                 }
             }
         }
+
+        if(GameSettings.CHECK_REPEATS && Arrays.deepEquals(prevGridArray, nextGridArray))
+            GameStats.repeatCounter++;
+
         // Swap these arrays to prevent memory clogging
-        boolean[][] referenceArrayHolder = gridArray;
+        boolean[][] referenceArrayHolder = prevGridArray;
+        prevGridArray = gridArray;
         gridArray = nextGridArray;
         nextGridArray = referenceArrayHolder;
 

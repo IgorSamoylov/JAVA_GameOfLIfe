@@ -17,7 +17,11 @@ public class GameAnimationTimer extends Thread {
         // Java FX simple calls it every frame and sends current system time in nanos
         @Override
         public void handle(long nowTime) {
-            if (GameStats.alive == 0) this.stop();
+            if (GameStats.alive == 0 ||
+                    GameStats.repeatCounter == GameSettings.MAX_REPEAT) {
+                this.stop();
+                GameStats.repeatCounter = 0;
+            }
             if (nowTime >= prevCallTime
                     + TimeUnit.MILLISECONDS.toNanos(GameSettings.GAME_REFRESH_DELAY)) {
                 gameEngine.nextStep();
