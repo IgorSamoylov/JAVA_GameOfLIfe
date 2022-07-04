@@ -89,7 +89,7 @@ public class GameEngine extends Thread {
         if(GameSettings.CHECK_REPEATS && Arrays.deepEquals(prevGridArray, nextGridArray))
             GameStats.repeatCounter++;
 
-        // Swap these arrays to prevent memory clogging
+        // Swap these arrays references to prevent memory clogging
         boolean[][] referenceArrayHolder = prevGridArray;
         prevGridArray = gridArray;
         gridArray = nextGridArray;
